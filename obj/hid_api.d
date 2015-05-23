@@ -1,0 +1,15 @@
+.\obj\hid_api.o: HID_API.c
+.\obj\hid_api.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\hid_api.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\hid_api.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\hid_api.o: .\Include\Driver\DrvUSB.h
+.\obj\hid_api.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h
+.\obj\hid_api.o: .\Include\CoreSupport\core_cm0.h
+.\obj\hid_api.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\system_NUC1xx.h
+.\obj\hid_api.o: .\Include\System\SysInfra.h
+.\obj\hid_api.o: .\Include\System\ModuleID.h
+.\obj\hid_api.o: HIDSysIO.h
+.\obj\hid_api.o: HID_API.h
+.\obj\hid_api.o: V6MDebug.h
+.\obj\hid_api.o: .\Include\Driver\DrvPWM.h
+.\obj\hid_api.o: .\Include\Driver\DrvSys.h

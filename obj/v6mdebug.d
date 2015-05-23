@@ -1,0 +1,17 @@
+.\obj\v6mdebug.o: V6MDebug.c
+.\obj\v6mdebug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\obj\v6mdebug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\v6mdebug.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\obj\v6mdebug.o: .\Include\Driver\DrvUSB.h
+.\obj\v6mdebug.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h
+.\obj\v6mdebug.o: .\Include\CoreSupport\core_cm0.h
+.\obj\v6mdebug.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\system_NUC1xx.h
+.\obj\v6mdebug.o: .\Include\System\SysInfra.h
+.\obj\v6mdebug.o: .\Include\System\ModuleID.h
+.\obj\v6mdebug.o: .\Include\Driver\DrvGPIO.h
+.\obj\v6mdebug.o: .\Include\Driver\DrvSys.h
+.\obj\v6mdebug.o: .\Include\NUC1xx-LB_002\LCD_Driver.h
+.\obj\v6mdebug.o: HIDSysIO.h
+.\obj\v6mdebug.o: V6MDebug.h
+.\obj\v6mdebug.o: .\Include\Driver\DrvPWM.h
+.\obj\v6mdebug.o: Motor_Ctrl.h

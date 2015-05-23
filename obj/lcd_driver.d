@@ -1,0 +1,11 @@
+.\obj\lcd_driver.o: C:\Nuvoton\BSP_Library\NUC100SeriesBSP_CMSIS_v1.05.003\NuvotonPlatform_Keil\Src\NUC1xx-LB_002\LCD_Driver.c
+.\obj\lcd_driver.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h
+.\obj\lcd_driver.o: .\Include\CoreSupport\core_cm0.h
+.\obj\lcd_driver.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\obj\lcd_driver.o: .\Include\DeviceSupport\Nuvoton\NUC1xx\system_NUC1xx.h
+.\obj\lcd_driver.o: .\Include\System\SysInfra.h
+.\obj\lcd_driver.o: .\Include\System\ModuleID.h
+.\obj\lcd_driver.o: .\Include\Driver\DrvSYS.h
+.\obj\lcd_driver.o: .\Include\Driver\DrvSPI.h
+.\obj\lcd_driver.o: .\Include\Driver\DrvGPIO.h
+.\obj\lcd_driver.o: .\Include\NUC1xx-LB_002\LCD_Driver.h

@@ -1,0 +1,6 @@
+-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx
+-I "D:\Tai Lieu\Github\CNC_Nuvoton\NUVOTON\RTE"
+-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include
+-I C:\Keil_v5\ARM\CMSIS\Include
+-D__UVISION_VERSION="514"
+-o .\obj\drvsys.o --list_dir ".\\lst\\" --list --omf_browse .\obj\drvsys.crf --depend .\obj\drvsys.d --feedback ".\obj\Smpl_HID_IO.fed" "Src\Driver\DrvSYS.c"
