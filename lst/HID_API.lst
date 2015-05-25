@@ -13320,7 +13320,7 @@ N
 N#define V6M_MAX_COMMAND_LENGTH	(HID_MAX_PACKET_SIZE_EP0-2)
 Nvoid V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 N//uint32_t uMotor_Move(uint8_t motor,uint16_t step);
-Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t y, uint8_t dirY);
+Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
 Nuint32_t uMotor_Pause(uint8_t mc_name);
 Nuint32_t uMotor_Run(uint8_t mc_name);
 Nuint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);

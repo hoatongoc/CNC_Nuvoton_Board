@@ -10192,6 +10192,15 @@ typedef struct {
 	motor *c_motor;
 } motor_controller;
 
+typedef struct {
+	uint8_t name;
+	E_DRVGPIO_FUNC PWM_func;
+	uint8_t enable;
+	uint8_t timer;
+	S_DRVPWM_TIME_DATA_T spt;
+	uint8_t ratio;
+} servo;
+
 extern motor motorX,motorY;
 extern motor_controller mcX,mcY;
 extern uint8_t SystemStatus;

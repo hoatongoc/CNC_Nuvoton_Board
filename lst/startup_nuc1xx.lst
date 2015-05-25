@@ -721,10 +721,10 @@ ARM Macro Assembler    Page 12
 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
 ork --depend=.\obj\startup_nuc1xx.d -o.\obj\startup_nuc1xx.o -I"D:\Tai Lieu\Git
-hub\CNC_Nuvoton\NUVOTON\RTE" -IC:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\De
-vice\NUC100\Include -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" 
---predefine="__UVISION_VERSION SETA 514" --list=.\lst\startup_nuc1xx.lst Includ
-e\DeviceSupport\Nuvoton\NUC1xx\startup\arm\startup_NUC1xx.s
+hub\CNC_Nuvoton_Board\RTE" -IC:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Devi
+ce\NUC100\Include -IC:\Keil_v5\ARM\CMSIS\Include --predefine="__EVAL SETA 1" --
+predefine="__UVISION_VERSION SETA 514" --list=.\lst\startup_nuc1xx.lst Include\
+DeviceSupport\Nuvoton\NUC1xx\startup\arm\startup_NUC1xx.s
 
 
 

@@ -13368,6 +13368,15 @@ N	S_DRVPWM_TIME_DATA_T spt;
 N	motor *c_motor;
 N} motor_controller;
 N
+Ntypedef struct {
+N	uint8_t name;
+N	E_DRVGPIO_FUNC PWM_func;
+N	uint8_t enable;
+N	uint8_t timer;
+N	S_DRVPWM_TIME_DATA_T spt;
+N	uint8_t ratio;
+N} servo;
+N
 Nextern motor motorX,motorY;
 Nextern motor_controller mcX,mcY;
 Nextern uint8_t SystemStatus;
@@ -13386,7 +13395,7 @@ Nuint8_t ChangeDir(motor_controller *mc, uint8_t dir);
 Nuint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 Nuint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 Nuint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
-W "Motor_Ctrl.h" 61 9 Deprecated declaration EmergencyPause - give arg types
+W "Motor_Ctrl.h" 70 9 Deprecated declaration EmergencyPause - give arg types
 Nuint8_t EmergencyPause();
 N
 N

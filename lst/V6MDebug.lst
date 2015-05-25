@@ -13754,7 +13754,7 @@ N
 N#define V6M_MAX_COMMAND_LENGTH	(HID_MAX_PACKET_SIZE_EP0-2)
 Nvoid V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 N//uint32_t uMotor_Move(uint8_t motor,uint16_t step);
-Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t y, uint8_t dirY);
+Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
 Nuint32_t uMotor_Pause(uint8_t mc_name);
 Nuint32_t uMotor_Run(uint8_t mc_name);
 Nuint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);
@@ -13818,6 +13818,15 @@ N	S_DRVPWM_TIME_DATA_T spt;
 N	motor *c_motor;
 N} motor_controller;
 N
+Ntypedef struct {
+N	uint8_t name;
+N	E_DRVGPIO_FUNC PWM_func;
+N	uint8_t enable;
+N	uint8_t timer;
+N	S_DRVPWM_TIME_DATA_T spt;
+N	uint8_t ratio;
+N} servo;
+N
 Nextern motor motorX,motorY;
 Nextern motor_controller mcX,mcY;
 Nextern uint8_t SystemStatus;
@@ -13836,7 +13845,7 @@ Nuint8_t ChangeDir(motor_controller *mc, uint8_t dir);
 Nuint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 Nuint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 Nuint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
-W "Motor_Ctrl.h" 61 9 Deprecated declaration EmergencyPause - give arg types
+W "Motor_Ctrl.h" 70 9 Deprecated declaration EmergencyPause - give arg types
 Nuint8_t EmergencyPause();
 N
 N
@@ -13876,26 +13885,28 @@ X		case 0xADUL:
 N		{
 N				uint16_t stepX = Convert_u8_u16(pu8Buffer[1],pu8Buffer[2]);
 N				uint8_t dX = pu8Buffer[3];
-N				uint16_t stepY = Convert_u8_u16(pu8Buffer[4],pu8Buffer[5]);
-N				uint8_t dY = pu8Buffer[6];
-N				return uMotor_Move(stepX,dX,stepY,dY);
-W "V6MDebug.c" 41 5 statement is unreachable
+N				uint16_t speedX = Convert_u8_u16(pu8Buffer[4],pu8Buffer[5]);
+N				uint16_t stepY = Convert_u8_u16(pu8Buffer[6],pu8Buffer[7]);
+N				uint8_t dY = pu8Buffer[8];
+N				uint16_t speedY = Convert_u8_u16(pu8Buffer[9],pu8Buffer[10]);
+N				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY);
+W "V6MDebug.c" 43 5 statement is unreachable
 N				break;
 N		}
 N		case CMD_PAUSE:
 X		case 0xA2UL:
 N				return uMotor_Pause(pu8Buffer[1]);
-W "V6MDebug.c" 45 5 statement is unreachable
+W "V6MDebug.c" 47 5 statement is unreachable
 N				break;
 N		case CMD_RUN:
 X		case 0xA1UL:
 N				return uMotor_Run(pu8Buffer[1]);
-W "V6MDebug.c" 48 5 statement is unreachable
+W "V6MDebug.c" 50 5 statement is unreachable
 N				break;
 N		case CMD_DIR:
 X		case 0xACUL:
 N				return uMotor_ChDir(pu8Buffer[1], pu8Buffer[2]);
-W "V6MDebug.c" 51 5 statement is unreachable
+W "V6MDebug.c" 53 5 statement is unreachable
 N				break;
 N		case CMD_SPEED:
 X		case 0xAEUL:
@@ -13903,18 +13914,18 @@ N				{
 N					uint8_t mcontroller_name = pu8Buffer[1];
 N					uint16_t speed = Convert_u8_u16(pu8Buffer[2],pu8Buffer[3]);
 N					return uMotor_ChSpeed(mcontroller_name,speed);
-W "V6MDebug.c" 57 6 statement is unreachable
+W "V6MDebug.c" 59 6 statement is unreachable
 N					break;
 N				}
 N		case CMD_SETHOME:
 X		case 0xA4UL:
 N				return uMotor_SetHome();
-W "V6MDebug.c" 61 5 statement is unreachable
+W "V6MDebug.c" 63 5 statement is unreachable
 N				break;
 N		case CMD_MOVEHOME:
 X		case 0xA5UL:
 N				return uMotor_MoveHome();
-W "V6MDebug.c" 64 5 statement is unreachable
+W "V6MDebug.c" 66 5 statement is unreachable
 N				break;
 N		case CMD_SETSTATUS:
 X		case 0xA6UL:
@@ -13922,7 +13933,7 @@ N				return uMotor_SetWorkingStatus(pu8Buffer[1]);
 N		case CMD_GET_STATUS:
 X		case 0xA0UL:
 N				return uMotor_Status();
-W "V6MDebug.c" 69 5 statement is unreachable
+W "V6MDebug.c" 71 5 statement is unreachable
 N				break;
 N    default:
 N        //DrvSIO_printf("Unknown cmd: %02x\n", u32Cmd);
@@ -13942,13 +13953,16 @@ N    V6M_ProcessOneCommand(au8CmdBuffer, u32BufferLen);
 N}
 N
 N
-Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t y, uint8_t dirY){
+Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y){
+N	
 N	//uMotor_SetWorkingStatus(NOT_FINISHED);
 N	mcX.c_motor->direction = dirX;
 N	mcY.c_motor->direction = dirY;
+N	ChangeSpeed(&mcX,speed_X);
+N	ChangeSpeed(&mcY,speed_Y);
 N	MoveMotor(&mcX,mcX.c_motor->direction,x);
 N	MoveMotor(&mcY,mcY.c_motor->direction,y);
-W "V6MDebug.c" 93 1 missing return statement at end of non-void function "uMotor_Move"
+W "V6MDebug.c" 98 1 missing return statement at end of non-void function "uMotor_Move"
 N}
 N
 Nuint32_t uMotor_Pause(uint8_t mc_name) {
@@ -13958,7 +13972,7 @@ X	if(mc_name == 0) PauseMotor(&mcX);
 N	else if(mc_name == MC_Y) PauseMotor(&mcY);
 X	else if(mc_name == 1) PauseMotor(&mcY);
 N	//else (mc_name == SERVO_Z) PauseMotor(&mcZ);
-W "V6MDebug.c" 100 1 missing return statement at end of non-void function "uMotor_Pause"
+W "V6MDebug.c" 105 1 missing return statement at end of non-void function "uMotor_Pause"
 N}
 N
 Nuint32_t uMotor_Run(uint8_t mc_name) {
@@ -13968,7 +13982,7 @@ X	if(mc_name == 0)
 N		RunMotor(&mcX);
 N	else RunMotor(&mcY);
 N	
-W "V6MDebug.c" 108 1 missing return statement at end of non-void function "uMotor_Run"
+W "V6MDebug.c" 113 1 missing return statement at end of non-void function "uMotor_Run"
 N}
 N
 Nuint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir) {
@@ -13977,7 +13991,7 @@ N	if(mc_name == MC_X)
 X	if(mc_name == 0)
 N		ChangeDir(&mcX, dir);
 N	else ChangeDir(&mcY,dir);
-W "V6MDebug.c" 115 1 missing return statement at end of non-void function "uMotor_ChDir"
+W "V6MDebug.c" 120 1 missing return statement at end of non-void function "uMotor_ChDir"
 N}
 N
 Nuint32_t uMotor_ChSpeed(uint8_t mc_name,uint16_t speed) {
@@ -13986,7 +14000,7 @@ N		if(mc_name == MC_X)
 X		if(mc_name == 0)
 N			ChangeSpeed(&mcX,speed);
 N		else ChangeSpeed(&mcY,speed);
-W "V6MDebug.c" 122 1 missing return statement at end of non-void function "uMotor_ChSpeed"
+W "V6MDebug.c" 127 1 missing return statement at end of non-void function "uMotor_ChSpeed"
 N}
 N
 N
@@ -14017,30 +14031,30 @@ N	au32Data[15] = mcY.c_motor->speed >>8;
 N	au32Data[16] = (uint8_t)mcY.c_motor->speed;
 N	
 N	VCMD_AckCommand(u32Errno, (const uint8_t *)&au32Data, 62);
-W "V6MDebug.c" 152 1 missing return statement at end of non-void function "uMotor_Status"
-W "V6MDebug.c" 126 7 variable "i" was declared but never referenced
+W "V6MDebug.c" 157 1 missing return statement at end of non-void function "uMotor_Status"
+W "V6MDebug.c" 131 7 variable "i" was declared but never referenced
 N}
 N
 Nuint32_t uMotor_Clear() {
 N	uint8_t au32Data[62] = {0};
 N  uint32_t u32Errno = 0;
 N	VCMD_AckCommand(u32Errno, (const uint8_t *)&au32Data, 62);
-W "V6MDebug.c" 158 1 missing return statement at end of non-void function "uMotor_Clear"
+W "V6MDebug.c" 163 1 missing return statement at end of non-void function "uMotor_Clear"
 N}
 N
 Nuint32_t uMotor_SetWorkingStatus(uint8_t status){
 N	SystemStatus = status;
-W "V6MDebug.c" 162 1 missing return statement at end of non-void function "uMotor_SetWorkingStatus"
+W "V6MDebug.c" 167 1 missing return statement at end of non-void function "uMotor_SetWorkingStatus"
 N};
 N
 Nuint32_t uMotor_SetHome() {
 N	//uMotor_SetWorkingStatus(NOT_FINISHED);
 N	SetHome(&mcX,&mcY);
-W "V6MDebug.c" 167 1 missing return statement at end of non-void function "uMotor_SetHome"
+W "V6MDebug.c" 172 1 missing return statement at end of non-void function "uMotor_SetHome"
 N}
 N
 Nuint32_t uMotor_MoveHome() {
 N	MoveHome(&mcX,&mcY);
-W "V6MDebug.c" 171 2 last line of file ends without a newline
-W "V6MDebug.c" 171 1 missing return statement at end of non-void function "uMotor_MoveHome"
+W "V6MDebug.c" 176 2 last line of file ends without a newline
+W "V6MDebug.c" 176 1 missing return statement at end of non-void function "uMotor_MoveHome"
 N}

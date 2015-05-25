@@ -35,9 +35,11 @@ static uint32_t V6M_ProcessOneCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 		{
 				uint16_t stepX = Convert_u8_u16(pu8Buffer[1],pu8Buffer[2]);
 				uint8_t dX = pu8Buffer[3];
-				uint16_t stepY = Convert_u8_u16(pu8Buffer[4],pu8Buffer[5]);
-				uint8_t dY = pu8Buffer[6];
-				return uMotor_Move(stepX,dX,stepY,dY);
+				uint16_t speedX = Convert_u8_u16(pu8Buffer[4],pu8Buffer[5]);
+				uint16_t stepY = Convert_u8_u16(pu8Buffer[6],pu8Buffer[7]);
+				uint8_t dY = pu8Buffer[8];
+				uint16_t speedY = Convert_u8_u16(pu8Buffer[9],pu8Buffer[10]);
+				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY);
 				break;
 		}
 		case CMD_PAUSE:
@@ -84,10 +86,13 @@ void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 }
 
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t y, uint8_t dirY){
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y){
+	
 	//uMotor_SetWorkingStatus(NOT_FINISHED);
 	mcX.c_motor->direction = dirX;
 	mcY.c_motor->direction = dirY;
+	ChangeSpeed(&mcX,speed_X);
+	ChangeSpeed(&mcY,speed_Y);
 	MoveMotor(&mcX,mcX.c_motor->direction,x);
 	MoveMotor(&mcY,mcY.c_motor->direction,y);
 }

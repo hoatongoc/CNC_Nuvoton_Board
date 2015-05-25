@@ -24,9 +24,9 @@ Memory Map of the image
 
   Image Entry point : 0x0000019d
 
-  Load Region LR_1 (Base: 0x00000000, Size: 0x00005218, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x00000000, Size: 0x00005244, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Base: 0x00000000, Size: 0x000049cc, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Base: 0x00000000, Size: 0x000049f8, Max: 0xffffffff, ABSOLUTE)
 
     Base Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -217,30 +217,29 @@ Memory Map of the image
     0x00004390   0x00000020   Code   RO         1551    i.USBD_IRQHandler   drvusb.o
     0x000043b0   0x0000003c   Code   RO          149    i.USB_SendBackData  hid_api.o
     0x000043ec   0x00000024   Code   RO          371    i.V6M_ProcessCommand  v6mdebug.o
-    0x00004410   0x000000be   Code   RO          372    i.V6M_ProcessOneCommand  v6mdebug.o
-    0x000044ce   0x0000001e   Code   RO          373    i.VCMD_AckCommand   v6mdebug.o
-    0x000044ec   0x00000006   Code   RO          374    i.VCMD_WillResetCommandSerial  v6mdebug.o
-    0x000044f2   0x00000018   Code   RO         1552    i.WordsCpy          drvusb.o
-    0x0000450a   0x00000002   PAD
-    0x0000450c   0x00000058   Code   RO          582    i.WriteData         lcd_driver.o
-    0x00004564   0x00000020   Code   RO          246    i._HID_CLR_CTRL_READY_AND_TRIG_STALL  hidsysio.o
-    0x00004584   0x0000001c   Code   RO          878    i.__ARM_common_switch8  drvgpio.o
-    0x000045a0   0x00000028   Code   RO          583    i.clr_all_pannal    lcd_driver.o
-    0x000045c8   0x00000128   Code   RO           66    i.main              smpl_hid_io.o
-    0x000046f0   0x00000028   Code   RO          584    i.print_lcd         lcd_driver.o
-    0x00004718   0x00000028   Code   RO          377    i.uMotor_ChDir      v6mdebug.o
-    0x00004740   0x00000028   Code   RO          378    i.uMotor_ChSpeed    v6mdebug.o
-    0x00004768   0x0000003c   Code   RO          380    i.uMotor_Move       v6mdebug.o
-    0x000047a4   0x00000014   Code   RO          381    i.uMotor_MoveHome   v6mdebug.o
-    0x000047b8   0x00000024   Code   RO          382    i.uMotor_Pause      v6mdebug.o
-    0x000047dc   0x00000020   Code   RO          383    i.uMotor_Run        v6mdebug.o
-    0x000047fc   0x00000014   Code   RO          384    i.uMotor_SetHome    v6mdebug.o
-    0x00004810   0x0000000c   Code   RO          385    i.uMotor_SetWorkingStatus  v6mdebug.o
-    0x0000481c   0x000000e0   Code   RO          386    i.uMotor_Status     v6mdebug.o
-    0x000048fc   0x0000009f   Data   RO          153    .constdata          hid_api.o
-    0x0000499b   0x00000001   PAD
-    0x0000499c   0x00000010   Data   RO         1097    .constdata          drvsys.o
-    0x000049ac   0x00000020   Data   RO         2095    Region$$Table       anon$$obj.o
+    0x00004410   0x000000d8   Code   RO          372    i.V6M_ProcessOneCommand  v6mdebug.o
+    0x000044e8   0x0000001e   Code   RO          373    i.VCMD_AckCommand   v6mdebug.o
+    0x00004506   0x00000006   Code   RO          374    i.VCMD_WillResetCommandSerial  v6mdebug.o
+    0x0000450c   0x00000018   Code   RO         1552    i.WordsCpy          drvusb.o
+    0x00004524   0x00000058   Code   RO          582    i.WriteData         lcd_driver.o
+    0x0000457c   0x00000020   Code   RO          246    i._HID_CLR_CTRL_READY_AND_TRIG_STALL  hidsysio.o
+    0x0000459c   0x0000001c   Code   RO          878    i.__ARM_common_switch8  drvgpio.o
+    0x000045b8   0x00000028   Code   RO          583    i.clr_all_pannal    lcd_driver.o
+    0x000045e0   0x00000128   Code   RO           66    i.main              smpl_hid_io.o
+    0x00004708   0x00000028   Code   RO          584    i.print_lcd         lcd_driver.o
+    0x00004730   0x00000028   Code   RO          377    i.uMotor_ChDir      v6mdebug.o
+    0x00004758   0x00000028   Code   RO          378    i.uMotor_ChSpeed    v6mdebug.o
+    0x00004780   0x00000050   Code   RO          380    i.uMotor_Move       v6mdebug.o
+    0x000047d0   0x00000014   Code   RO          381    i.uMotor_MoveHome   v6mdebug.o
+    0x000047e4   0x00000024   Code   RO          382    i.uMotor_Pause      v6mdebug.o
+    0x00004808   0x00000020   Code   RO          383    i.uMotor_Run        v6mdebug.o
+    0x00004828   0x00000014   Code   RO          384    i.uMotor_SetHome    v6mdebug.o
+    0x0000483c   0x0000000c   Code   RO          385    i.uMotor_SetWorkingStatus  v6mdebug.o
+    0x00004848   0x000000e0   Code   RO          386    i.uMotor_Status     v6mdebug.o
+    0x00004928   0x0000009f   Data   RO          153    .constdata          hid_api.o
+    0x000049c7   0x00000001   PAD
+    0x000049c8   0x00000010   Data   RO         1097    .constdata          drvsys.o
+    0x000049d8   0x00000020   Data   RO         2095    Region$$Table       anon$$obj.o
 
 
     Execution Region ER_RW (Base: 0x20000000, Size: 0x0000084c, Max: 0xffffffff, ABSOLUTE)
@@ -290,24 +289,24 @@ Image component sizes
 
          0          0          0       1520          0        468   ascii_table.o
          0          0          0          0          0       4536   core_cm0.o
-      2348        146          0         16          0      10647   drvgpio.o
-      5096        330          0          4         64      16329   drvpwm.o
-       796         84         16          8          0       6969   drvsys.o
-       992         52          0         12          0       6770   drvuart.o
-      3692        346          0          8        192      43220   drvusb.o
-       306         40        159          1         64     131672   hid_api.o
-      1102        178          0        497         40      21916   hidsysio.o
+      2348        146          0         16          0      10635   drvgpio.o
+      5096        330          0          4         64      16313   drvpwm.o
+       796         84         16          8          0       6945   drvsys.o
+       992         52          0         12          0       6750   drvuart.o
+      3692        346          0          8        192      43136   drvusb.o
+       306         40        159          1         64     131652   hid_api.o
+      1102        178          0        497         40      21896   hidsysio.o
       1108         30          0         16          0       5495   lcd_driver.o
-       422          4          0          1        112     125499   motor_ctrl.o
-       740         90          0          0          0       6264   smpl_hid_io.o
-       100         46        192          0       1024        688   startup_nuc1xx.o
-       162         28          0         28          0       1794   system_nuc1xx.o
-       746         86          0          4         62      11988   v6mdebug.o
+       422          4          0          1        112     125587   motor_ctrl.o
+       740         90          0          0          0       6240   smpl_hid_io.o
+       100         46        192          0       1024        684   startup_nuc1xx.o
+       162         28          0         28          0       1782   system_nuc1xx.o
+       792         88          0          4         62      12168   v6mdebug.o
 
     ----------------------------------------------------------------------
-     17628       1460        400       2124       1560     394255   Object Totals
+     17672       1462        400       2124       1560     394287   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        18          0          1          9          2          0   (incl. Padding)
+        16          0          1          9          2          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -357,15 +356,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     18492       1476        400       2124       1660     388963   Grand Totals
-     18492       1476        400       2124       1660     388963   ELF Image Totals
-     18492       1476        400       2124          0          0   ROM Totals
+     18536       1478        400       2124       1660     388995   Grand Totals
+     18536       1478        400       2124       1660     388995   ELF Image Totals
+     18536       1478        400       2124          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                18892 (  18.45kB)
+    Total RO  Size (Code + RO Data)                18936 (  18.49kB)
     Total RW  Size (RW Data + ZI Data)              3784 (   3.70kB)
-    Total ROM Size (Code + RO Data + RW Data)      21016 (  20.52kB)
+    Total ROM Size (Code + RO Data + RW Data)      21060 (  20.57kB)
 
 ==============================================================================
 

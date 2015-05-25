@@ -10103,7 +10103,7 @@ void     DrvPWM_SetTimerIO(uint8_t u8Timer, int32_t i32Enable);
 
 void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t y, uint8_t dirY);
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
 uint32_t uMotor_Pause(uint8_t mc_name);
 uint32_t uMotor_Run(uint8_t mc_name);
 uint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);
