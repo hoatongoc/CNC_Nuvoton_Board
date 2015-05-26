@@ -13375,16 +13375,16 @@ N	uint8_t enable;
 N	uint8_t timer;
 N	S_DRVPWM_TIME_DATA_T spt;
 N	uint8_t ratio;
-N} servo;
+N} servo_controller;
 N
 Nextern motor motorX,motorY;
 Nextern motor_controller mcX,mcY;
 Nextern uint8_t SystemStatus;
-N
+Nextern servo_controller scZ;
 N//init func for motor and motor controller
 Nuint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 Nuint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-N
+Nuint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 N//cac ham xu ly motor
 Nuint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 Nuint8_t PauseMotor (motor_controller *mc);
@@ -13397,7 +13397,7 @@ Nuint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 Nuint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 W "Motor_Ctrl.h" 70 9 Deprecated declaration EmergencyPause - give arg types
 Nuint8_t EmergencyPause();
-N
+Nuint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 N
 N//cac ham xu ly du lieu
 Nuint16_t Convert_u8_u16(uint8_t high, uint8_t low);
@@ -13433,6 +13433,8 @@ N	InitMotorController(&mcX,&motorX,E_FUNC_PWM01,DRVPWM_TIMER0,MC_X,0);
 X	InitMotorController(&mcX,&motorX,E_FUNC_PWM01,0x00,0,0);
 N	InitMotorController(&mcY,&motorY,E_FUNC_PWM23,DRVPWM_TIMER2,MC_Y,1);
 X	InitMotorController(&mcY,&motorY,E_FUNC_PWM23,0x02,1,1);
+N	InitServoController(&scZ,E_FUNC_PWM5,DRVPWM_TIMER5,SERVO_Z);
+X	InitServoController(&scZ,E_FUNC_PWM5,0x05,3);
 N}
 N
 Nvoid Init_GPIO() {
@@ -13533,6 +13535,7 @@ N	Init_SYS();
 N
 NDrvGPIO_InitFunction(mcX.PWM_func);
 NDrvGPIO_InitFunction(mcY.PWM_func);
+NDrvGPIO_InitFunction(scZ.PWM_func);
 NDrvPWM_Open();
 N	
 N//select PWM clock source	
@@ -13540,17 +13543,22 @@ NDrvPWM_SelectClockSource(mcX.timer, DRVPWM_HCLK);
 XDrvPWM_SelectClockSource(mcX.timer, 2);
 NDrvPWM_SelectClockSource(mcY.timer, DRVPWM_HCLK);
 XDrvPWM_SelectClockSource(mcY.timer, 2);
+NDrvPWM_SelectClockSource(scZ.timer, DRVPWM_HCLK);
+XDrvPWM_SelectClockSource(scZ.timer, 2);
 N
 N	//config frequency/pulse/mode/inverter function  
 NDrvPWM_SetTimerClk(mcX.timer, &(mcX.spt));
 NDrvPWM_SetTimerClk(mcY.timer, &(mcY.spt));
+NDrvPWM_SetTimerClk(scZ.timer, &(scZ.spt));
 N	
 N	
 NDrvPWM_SetTimerIO(mcX.timer, 1);
 NDrvPWM_SetTimerIO(mcY.timer, 1);
+NDrvPWM_SetTimerIO(scZ.timer, 1);
 N
 NDrvPWM_Enable(mcX.timer,0);
 NDrvPWM_Enable(mcY.timer,0);
+NDrvPWM_Enable(scZ.timer,1);
 NDrvPWM_EnableInt(mcX.timer,0,DRVPWM_PwmIRQHandler_X);
 NDrvPWM_EnableInt(mcY.timer,0,DRVPWM_PwmIRQHandler_Y);
 N	//END INIT PWM	

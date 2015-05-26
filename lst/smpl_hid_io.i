@@ -10199,16 +10199,16 @@ typedef struct {
 	uint8_t timer;
 	S_DRVPWM_TIME_DATA_T spt;
 	uint8_t ratio;
-} servo;
+} servo_controller;
 
 extern motor motorX,motorY;
 extern motor_controller mcX,mcY;
 extern uint8_t SystemStatus;
-
+extern servo_controller scZ;
 
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 
 uint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 uint8_t PauseMotor (motor_controller *mc);
@@ -10220,7 +10220,7 @@ uint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 uint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 uint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 uint8_t EmergencyPause();
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 
 
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low);
@@ -10248,6 +10248,7 @@ void Init_SYS() {
 	motorX.speed = motorY.speed = (5000 < 20000 ? 5000 : 20000);
 	InitMotorController(&mcX,&motorX,E_FUNC_PWM01,0x00,0,0);
 	InitMotorController(&mcY,&motorY,E_FUNC_PWM23,0x02,1,1);
+	InitServoController(&scZ,E_FUNC_PWM5,0x05,3);
 }
 
 void Init_GPIO() {
@@ -10339,22 +10340,27 @@ DrvSYS_SelectHCLKSource(0);
 
 DrvGPIO_InitFunction(mcX.PWM_func);
 DrvGPIO_InitFunction(mcY.PWM_func);
+DrvGPIO_InitFunction(scZ.PWM_func);
 DrvPWM_Open();
 	
 
 DrvPWM_SelectClockSource(mcX.timer, 2);
 DrvPWM_SelectClockSource(mcY.timer, 2);
+DrvPWM_SelectClockSource(scZ.timer, 2);
 
 	
 DrvPWM_SetTimerClk(mcX.timer, &(mcX.spt));
 DrvPWM_SetTimerClk(mcY.timer, &(mcY.spt));
+DrvPWM_SetTimerClk(scZ.timer, &(scZ.spt));
 	
 	
 DrvPWM_SetTimerIO(mcX.timer, 1);
 DrvPWM_SetTimerIO(mcY.timer, 1);
+DrvPWM_SetTimerIO(scZ.timer, 1);
 
 DrvPWM_Enable(mcX.timer,0);
 DrvPWM_Enable(mcY.timer,0);
+DrvPWM_Enable(scZ.timer,1);
 DrvPWM_EnableInt(mcX.timer,0,DRVPWM_PwmIRQHandler_X);
 DrvPWM_EnableInt(mcY.timer,0,DRVPWM_PwmIRQHandler_Y);
 	

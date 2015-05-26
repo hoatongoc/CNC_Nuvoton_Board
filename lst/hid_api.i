@@ -10097,13 +10097,13 @@ void     DrvPWM_SetTimerIO(uint8_t u8Timer, int32_t i32Enable);
 
 	
 	
-#line 32 "V6MDebug.h"
+#line 33 "V6MDebug.h"
 
 
 
 void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y, uint8_t z_ratio);
 uint32_t uMotor_Pause(uint8_t mc_name);
 uint32_t uMotor_Run(uint8_t mc_name);
 uint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);
@@ -10113,6 +10113,7 @@ uint32_t uMotor_Clear();
 uint32_t uMotor_SetWorkingStatus(uint8_t status);
 uint32_t uMotor_SetHome();
 uint32_t uMotor_MoveHome();
+uint32_t uServo_Rotate(uint8_t sc_name, uint8_t ratio);
 #line 13 "HID_API.c"
 #line 1 ".\\Include\\Driver\\DrvSys.h"
  

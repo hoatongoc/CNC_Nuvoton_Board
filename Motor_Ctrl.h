@@ -47,16 +47,16 @@ typedef struct {
 	uint8_t timer;
 	S_DRVPWM_TIME_DATA_T spt;
 	uint8_t ratio;
-} servo;
+} servo_controller;
 
 extern motor motorX,motorY;
 extern motor_controller mcX,mcY;
 extern uint8_t SystemStatus;
-
+extern servo_controller scZ;
 //init func for motor and motor controller
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 //cac ham xu ly motor
 uint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 uint8_t PauseMotor (motor_controller *mc);
@@ -68,7 +68,7 @@ uint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 uint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 uint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 uint8_t EmergencyPause();
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 
 //cac ham xu ly du lieu
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low);

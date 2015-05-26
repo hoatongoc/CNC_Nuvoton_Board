@@ -8352,16 +8352,16 @@ typedef struct {
 	uint8_t timer;
 	S_DRVPWM_TIME_DATA_T spt;
 	uint8_t ratio;
-} servo;
+} servo_controller;
 
 extern motor motorX,motorY;
 extern motor_controller mcX,mcY;
 extern uint8_t SystemStatus;
-
+extern servo_controller scZ;
 
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 
 uint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 uint8_t PauseMotor (motor_controller *mc);
@@ -8373,7 +8373,7 @@ uint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 uint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 uint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 uint8_t EmergencyPause();
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 
 
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low);
@@ -8381,12 +8381,253 @@ uint16_t Convert_u8_u16(uint8_t high, uint8_t low);
 
 
 #line 2 "Motor_Ctrl.c"
+#line 1 ".\\Include\\Driver\\DrvSys.h"
+ 
+ 
+ 
+ 
+ 
 
+
+
+#line 10 ".\\Include\\Driver\\DrvSys.h"
+
+
+ 
+ 
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+#line 35 ".\\Include\\Driver\\DrvSys.h"
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_EXTERNAL_12M = 0,
+    E_SYS_INTERNAL_22M = 1, 
+}E_SYS_PLL_CLKSRC;
+
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_GPIO_RST  = 1,
+    E_SYS_TMR0_RST  = 2,
+    E_SYS_TMR1_RST  = 3,
+    E_SYS_TMR2_RST  = 4,
+    E_SYS_TMR3_RST  = 5,
+    E_SYS_I2C0_RST  = 8,
+    E_SYS_I2C1_RST  = 9,
+    E_SYS_SPI0_RST  = 12,
+    E_SYS_SPI1_RST  = 13,
+    E_SYS_SPI2_RST  = 14,
+    E_SYS_SPI3_RST  = 15,
+    E_SYS_UART0_RST = 16,
+    E_SYS_UART1_RST = 17,
+    E_SYS_UART2_RST = 18,
+    E_SYS_PWM03_RST = 20,
+    E_SYS_PWM47_RST = 21,
+    E_SYS_ACMP_RST  = 22,
+    E_SYS_PS2_RST   = 23,
+    E_SYS_CAN0_RST  = 24,
+    E_SYS_USBD_RST  = 27,
+    E_SYS_ADC_RST   = 28,
+    E_SYS_I2S_RST   = 29,
+    E_SYS_PDMA_RST  = 32,
+    E_SYS_EBI_RST   = 33
+}E_SYS_IP_RST;
+
+ 
+ 
+ 
+
+typedef enum 
+{
+    E_SYS_WDT_CLK   = 0,
+    E_SYS_RTC_CLK   = 1,
+    E_SYS_TMR0_CLK  = 2,
+    E_SYS_TMR1_CLK  = 3,
+    E_SYS_TMR2_CLK  = 4,
+    E_SYS_TMR3_CLK  = 5,
+    E_SYS_FDIV_CLK  = 6,
+    E_SYS_I2C0_CLK  = 8,
+    E_SYS_I2C1_CLK  = 9,
+    E_SYS_SPI0_CLK  = 12,
+    E_SYS_SPI1_CLK  = 13,
+    E_SYS_SPI2_CLK  = 14,
+    E_SYS_SPI3_CLK  = 15,
+    E_SYS_UART0_CLK = 16,
+    E_SYS_UART1_CLK = 17,
+    E_SYS_UART2_CLK = 18,
+    E_SYS_PWM01_CLK = 20,
+    E_SYS_PWM23_CLK = 21,
+    E_SYS_PWM45_CLK = 22,
+    E_SYS_PWM67_CLK = 23,
+    E_SYS_CAN0_CLK  = 24,
+    E_SYS_USBD_CLK  = 27,
+    E_SYS_ADC_CLK   = 28,
+    E_SYS_I2S_CLK   = 29,
+    E_SYS_ACMP_CLK  = 30,
+    E_SYS_PS2_CLK   = 31,
+    E_SYS_PDMA_CLK  = 33,
+    E_SYS_ISP_CLK   = 34,
+    E_SYS_EBI_CLK   = 35
+}E_SYS_IP_CLK;
+
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_ADC_DIV,
+    E_SYS_UART_DIV,
+    E_SYS_USB_DIV,
+    E_SYS_HCLK_DIV
+
+}E_SYS_IP_DIV;
+
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_WDT_CLKSRC,
+    E_SYS_ADC_CLKSRC,
+    E_SYS_TMR0_CLKSRC,
+    E_SYS_TMR1_CLKSRC,
+    E_SYS_TMR2_CLKSRC,
+    E_SYS_TMR3_CLKSRC,
+    E_SYS_UART_CLKSRC,
+    E_SYS_PWM01_CLKSRC,
+    E_SYS_PWM23_CLKSRC,
+    E_SYS_I2S_CLKSRC,
+    E_SYS_FRQDIV_CLKSRC,
+    E_SYS_PWM45_CLKSRC,
+    E_SYS_PWM67_CLKSRC
+
+}E_SYS_IP_CLKSRC;
+
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_XTL12M,
+    E_SYS_XTL32K,
+    E_SYS_OSC22M,
+    E_SYS_OSC10K,
+    E_SYS_PLL,
+}E_SYS_CHIP_CLKSRC;
+
+
+ 
+ 
+ 
+typedef enum 
+{
+    E_SYS_IMMEDIATE, 
+    E_SYS_WAIT_FOR_CPU
+}E_SYS_PD_TYPE;
+
+
+typedef void (*BOD_CALLBACK)(void);
+typedef void (*PWRWU_CALLBACK)(void);
+
+ 
+ 
+ 
+void     DrvSYS_ClearClockSwitchStatus(void);
+uint32_t DrvSYS_ClearResetSource(uint32_t u32Src);
+
+void     DrvSYS_Delay(uint32_t us);
+void     DrvSYS_DisableBODLowPowerMode(void);
+void     DrvSYS_DisableHighPerformanceMode(void);
+void     DrvSYS_DisableLowVoltReset(void);
+void     DrvSYS_DisablePOR(void);
+void     DrvSYS_DisableTemperatureSensor(void);
+
+void     DrvSYS_EnableBODLowPowerMode(void);
+void     DrvSYS_EnableHighPerformanceMode(void);
+void     DrvSYS_EnableLowVoltReset(void);
+void     DrvSYS_EnablePOR(void);
+void     DrvSYS_EnableTemperatureSensor(void);
+void     DrvSYS_EnterPowerDown(E_SYS_PD_TYPE ePDType);
+
+uint32_t DrvSYS_GetBODState(void);
+int32_t  DrvSYS_GetChipClockSourceStatus(E_SYS_CHIP_CLKSRC eClkSrc);
+uint32_t DrvSYS_GetClockSwitchStatus(void);
+uint32_t DrvSYS_GetExtClockFreq(void);
+uint32_t DrvSYS_GetHCLKFreq(void);
+uint32_t DrvSYS_GetPLLClockFreq(void);
+uint32_t DrvSYS_GetPLLContent(E_SYS_PLL_CLKSRC ePllSrc, uint32_t u32PllClk);
+uint32_t DrvSYS_GetResetSource(void);
+uint32_t DrvSYS_GetVersion(void);
+
+int32_t  DrvSYS_IsProtectedRegLocked(void);
+
+int32_t  DrvSYS_LockProtectedReg(void);
+
+int32_t  DrvSYS_Open(uint32_t u32Hclk);
+
+uint32_t DrvSYS_ReadProductID(void);
+void     DrvSYS_ResetChip(void);
+void     DrvSYS_ResetCPU(void);
+void     DrvSYS_ResetIP(E_SYS_IP_RST eIpRst);
+
+void     DrvSYS_SelectBODVolt(uint8_t u8Volt);
+int32_t  DrvSYS_SelectHCLKSource(uint8_t u8ClkSrcSel);
+int32_t  DrvSYS_SelectIPClockSource(E_SYS_IP_CLKSRC eIpClkSrc, uint8_t u8ClkSrcSel);
+void     DrvSYS_SelectPLLSource(E_SYS_PLL_CLKSRC ePllSrc);
+int32_t  DrvSYS_SelectSysTickSource(uint8_t u8ClkSrcSel);
+void     DrvSYS_SetBODFunction(int32_t i32Enable, int32_t i32Mode, BOD_CALLBACK bodcallbackFn);
+int32_t  DrvSYS_SetClockDivider(E_SYS_IP_DIV eIpDiv , int32_t i32value);
+int32_t  DrvSYS_SetFreqDividerOutput(int32_t i32Flag, uint8_t u8Divider);
+void     DrvSYS_SetIPClock(E_SYS_IP_CLK eIpClk, int32_t i32Enable);
+int32_t  DrvSYS_SetOscCtrl(E_SYS_CHIP_CLKSRC eClkSrc, int32_t i32Enable);
+void     DrvSYS_SetPLLContent(uint32_t u32PllContent);
+void     DrvSYS_SetPLLMode(int32_t i32Flag);
+void     DrvSYS_SetPowerDownWakeUpInt(int32_t i32Enable, PWRWU_CALLBACK pdwucallbackFn, int32_t i32enWUDelay);
+
+int32_t  DrvSYS_UnlockProtectedReg(void);
+
+
+
+#line 3 "Motor_Ctrl.c"
 motor motorX , motorY;
 motor_controller mcX , mcY;
+servo_controller scZ;
 uint8_t SystemStatus = 2;
 
 
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name) {
+	sc->enable = 0;
+	sc->timer = m_timer;
+	sc->PWM_func = m_func;
+	sc->name = m_name;
+	sc->ratio = 1;
+	sc->spt.u8HighPulseRatio = sc->ratio;
+	sc->spt.i32Inverter = 0;
+	sc->spt.u32Frequency = 50;
+	sc->spt.u8Mode = 1;
+}
 
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed) {
 	m->maxStep = max_step;
@@ -8408,7 +8649,7 @@ uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_F
 	m_controller->spt.i32Inverter = 0;
 	m_controller->spt.u32Frequency = m->speed;
 	m_controller->spt.u8Mode = 1;
-	m_controller->dir_port = dirP;
+	m_controller->dir_port = dirP; 
 	return 1;
 }
 
@@ -8523,7 +8764,16 @@ uint8_t EmergencyPause() {
 	PauseMotor(&mcY);
 }
 
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio) {
+	if(sc->ratio != ratio) {
+	sc->enable = 1;
+	sc->ratio= ratio;
+	sc->spt.u8HighPulseRatio = sc->ratio;
+	DrvPWM_SetTimerClk(sc->timer, &(sc->spt));
+	DrvSYS_Delay(300000);
+	sc->enable = 0;
+	}
+}
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low) {
 	uint16_t result = (uint16_t)(high<<8|low);
 	return result;

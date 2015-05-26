@@ -13302,38 +13302,40 @@ N#define V6M_CMD_RESET_CMD_SRIAL	0xFFFFFFFFUL
 N
 N	
 N	//cac command ID xu ly motor
-N#define CMD_GET_STATUS 	0xA0UL	
-N#define CMD_RUN					0xA1UL
-N#define CMD_PAUSE 			0xA2UL
-N#define CMD_WAIT				0xA3UL
-N#define CMD_SETHOME			0xA4UL
-N#define CMD_MOVEHOME 		0xA5UL
-N#define CMD_SETSTATUS 	0xA6UL
-N#define CMD_MOVE 				0xAAUL
-N#define CMD_CLR 				0xABUL
-N#define CMD_DIR 				0xACUL
-N#define CMD_STEP 				0xADUL
-N#define CMD_SPEED				0xAEUL
-N#define CMD_RESET				0xAFUL
+N#define CMD_GET_STATUS 		0xA0UL	
+N#define CMD_RUN						0xA1UL
+N#define CMD_PAUSE 				0xA2UL
+N#define CMD_WAIT					0xA3UL
+N#define CMD_SETHOME				0xA4UL
+N#define CMD_MOVEHOME 			0xA5UL
+N#define CMD_SETSTATUS 		0xA6UL
+N#define CMD_ROTATE_SERVO 	0xA7UL	
+N#define CMD_MOVE 					0xAAUL
+N#define CMD_CLR 					0xABUL
+N#define CMD_DIR 					0xACUL
+N#define CMD_STEP 					0xADUL
+N#define CMD_SPEED					0xAEUL
+N#define CMD_RESET					0xAFUL
 N
 N
 N#define V6M_MAX_COMMAND_LENGTH	(HID_MAX_PACKET_SIZE_EP0-2)
 Nvoid V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 N//uint32_t uMotor_Move(uint8_t motor,uint16_t step);
-Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
+Nuint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y, uint8_t z_ratio);
 Nuint32_t uMotor_Pause(uint8_t mc_name);
 Nuint32_t uMotor_Run(uint8_t mc_name);
 Nuint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);
 Nuint32_t uMotor_ChSpeed(uint8_t mc_name,uint16_t speed);
-W "V6MDebug.h" 42 10 Deprecated declaration uMotor_Status - give arg types
+W "V6MDebug.h" 43 10 Deprecated declaration uMotor_Status - give arg types
 Nuint32_t uMotor_Status();
-W "V6MDebug.h" 43 10 Deprecated declaration uMotor_Clear - give arg types
+W "V6MDebug.h" 44 10 Deprecated declaration uMotor_Clear - give arg types
 Nuint32_t uMotor_Clear();
 Nuint32_t uMotor_SetWorkingStatus(uint8_t status);
-W "V6MDebug.h" 45 10 Deprecated declaration uMotor_SetHome - give arg types
+W "V6MDebug.h" 46 10 Deprecated declaration uMotor_SetHome - give arg types
 Nuint32_t uMotor_SetHome();
-W "V6MDebug.h" 46 10 Deprecated declaration uMotor_MoveHome - give arg types
+W "V6MDebug.h" 47 10 Deprecated declaration uMotor_MoveHome - give arg types
 Nuint32_t uMotor_MoveHome();
+Nuint32_t uServo_Rotate(uint8_t sc_name, uint8_t ratio);
 N#ifdef __cplusplus
 S} /* extern "C" */
 N#endif

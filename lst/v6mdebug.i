@@ -10444,13 +10444,13 @@ void     DrvPWM_SetTimerIO(uint8_t u8Timer, int32_t i32Enable);
 
 	
 	
-#line 32 "V6MDebug.h"
+#line 33 "V6MDebug.h"
 
 
 
 void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len);
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y);
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y, uint8_t z_ratio);
 uint32_t uMotor_Pause(uint8_t mc_name);
 uint32_t uMotor_Run(uint8_t mc_name);
 uint32_t uMotor_ChDir(uint8_t mc_name,uint8_t dir);
@@ -10460,6 +10460,7 @@ uint32_t uMotor_Clear();
 uint32_t uMotor_SetWorkingStatus(uint8_t status);
 uint32_t uMotor_SetHome();
 uint32_t uMotor_MoveHome();
+uint32_t uServo_Rotate(uint8_t sc_name, uint8_t ratio);
 #line 11 "V6MDebug.c"
 #line 12 "V6MDebug.c"
 #line 1 "Motor_Ctrl.h"
@@ -10500,16 +10501,16 @@ typedef struct {
 	uint8_t timer;
 	S_DRVPWM_TIME_DATA_T spt;
 	uint8_t ratio;
-} servo;
+} servo_controller;
 
 extern motor motorX,motorY;
 extern motor_controller mcX,mcY;
 extern uint8_t SystemStatus;
-
+extern servo_controller scZ;
 
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 
 uint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 uint8_t PauseMotor (motor_controller *mc);
@@ -10521,7 +10522,7 @@ uint8_t ChangeSpeed(motor_controller *mc, uint16_t speed);
 uint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 uint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 uint8_t EmergencyPause();
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 
 
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low);
@@ -10558,7 +10559,8 @@ static uint32_t V6M_ProcessOneCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 				uint16_t stepY = Convert_u8_u16(pu8Buffer[6],pu8Buffer[7]);
 				uint8_t dY = pu8Buffer[8];
 				uint16_t speedY = Convert_u8_u16(pu8Buffer[9],pu8Buffer[10]);
-				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY);
+				uint8_t ratioZ = pu8Buffer[11];
+				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY,ratioZ);
 				break;
 		}
 		case 0xA2UL:
@@ -10583,6 +10585,9 @@ static uint32_t V6M_ProcessOneCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 		case 0xA5UL:
 				return uMotor_MoveHome();
 				break;
+		case 0xA7UL:
+				return uServo_Rotate(pu8Buffer[1],pu8Buffer[2]);
+				break;
 		case 0xA6UL:
 				return uMotor_SetWorkingStatus(pu8Buffer[1]);
 		case 0xA0UL:
@@ -10605,9 +10610,10 @@ void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 }
 
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y){
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y, uint8_t z_ratio){
 	
 	
+	ChangeServoPosition(&scZ,z_ratio);
 	mcX.c_motor->direction = dirX;
 	mcY.c_motor->direction = dirY;
 	ChangeSpeed(&mcX,speed_X);
@@ -10671,6 +10677,8 @@ uint32_t uMotor_Status() {
 	au32Data[14] = mcY.enable;
 	au32Data[15] = mcY.c_motor->speed >>8;
 	au32Data[16] = (uint8_t)mcY.c_motor->speed;
+	au32Data[17] = scZ.enable;
+	au32Data[18] = scZ.ratio;
 	
 	VCMD_AckCommand(u32Errno, (const uint8_t *)&au32Data, 62);
 }
@@ -10692,4 +10700,10 @@ uint32_t uMotor_SetHome() {
 
 uint32_t uMotor_MoveHome() {
 	MoveHome(&mcX,&mcY);
+}
+
+uint32_t uServo_Rotate(uint8_t sc_name, uint8_t ratio) {
+	if(sc_name == scZ.name) {
+		ChangeServoPosition(&scZ,ratio);
+	}
 }

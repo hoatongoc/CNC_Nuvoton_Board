@@ -1,4 +1,4 @@
-;#<FEEDBACK># ARM Linker, 5050106: Last Updated: Sun May 24 21:00:46 2015
+;#<FEEDBACK># ARM Linker, 5050106: Last Updated: Mon May 25 23:07:13 2015
 ;VERSION 0.2
 ;FILE core_cm0.o
 __REV16 <= USED 0
@@ -53,7 +53,6 @@ DrvPWM_SetTimerCounter <= USED 0
 ;FILE drvsys.o
 DrvSYS_ClearClockSwitchStatus <= USED 0
 DrvSYS_ClearResetSource <= USED 0
-DrvSYS_Delay <= USED 0
 DrvSYS_DisableBODLowPowerMode <= USED 0
 DrvSYS_DisableHighPerformanceMode <= USED 0
 DrvSYS_DisableLowVoltReset <= USED 0

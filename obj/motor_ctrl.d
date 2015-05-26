@@ -8,3 +8,4 @@
 .\obj\motor_ctrl.o: .\Include\System\SysInfra.h
 .\obj\motor_ctrl.o: .\Include\System\ModuleID.h
 .\obj\motor_ctrl.o: .\Include\Driver\DrvGPIO.h
+.\obj\motor_ctrl.o: .\Include\Driver\DrvSys.h

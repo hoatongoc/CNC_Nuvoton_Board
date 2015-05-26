@@ -11195,16 +11195,16 @@ N	uint8_t enable;
 N	uint8_t timer;
 N	S_DRVPWM_TIME_DATA_T spt;
 N	uint8_t ratio;
-N} servo;
+N} servo_controller;
 N
 Nextern motor motorX,motorY;
 Nextern motor_controller mcX,mcY;
 Nextern uint8_t SystemStatus;
-N
+Nextern servo_controller scZ;
 N//init func for motor and motor controller
 Nuint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed);
 Nuint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name,uint8_t dirP); 
-N
+Nuint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name);
 N//cac ham xu ly motor
 Nuint8_t MoveMotor(motor_controller *mc, uint8_t dir,uint32_t step);
 Nuint8_t PauseMotor (motor_controller *mc);
@@ -11217,7 +11217,7 @@ Nuint8_t SetHome(motor_controller *mc_x, motor_controller *mc_y);
 Nuint8_t MoveHome(motor_controller *mc_x,motor_controller *mc_y);
 W "Motor_Ctrl.h" 70 9 Deprecated declaration EmergencyPause - give arg types
 Nuint8_t EmergencyPause();
-N
+Nuint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio);
 N
 N//cac ham xu ly du lieu
 Nuint16_t Convert_u8_u16(uint8_t high, uint8_t low);
@@ -11226,13 +11226,264 @@ N
 N
 N#endif
 L 2 "Motor_Ctrl.c" 2
+N#include "DrvSys.h"
+L 1 ".\Include\Driver\DrvSys.h" 1
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*                                                                                                         */
+N/* Copyright(c) 2009 Nuvoton Technology Corp. All rights reserved.                                         */
+N/*                                                                                                         */
+N/*---------------------------------------------------------------------------------------------------------*/
+N#ifndef DRVSYS_H
+N#define DRVSYS_H
 N
+N#include "NUC1xx.h"
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/* Macro, type and constant definitions                                                                    */
+N/*---------------------------------------------------------------------------------------------------------*/
+N#define DRVSYS_MAJOR_NUM 1
+N#define DRVSYS_MINOR_NUM 02
+N#define DRVSYS_BUILD_NUM 3
+N
+N#define DRVSYS_VERSION_NUM      _SYSINFRA_VERSION(DRVSYS_MAJOR_NUM,DRVSYS_MINOR_NUM,DRVSYS_BUILD_NUM)  
+N
+N//E_DRVSYS_ERR_UNLOCK_FAIL      Unlock protected register failed
+N//E_DRVSYS_ERR_LOCK_FAIL        Lock protected register failed
+N//E_DRVSYS_ERR_ARGUMENT         Incorrect Argument
+N//E_DRVSYS_ERR_IPSRC            Incorrect IP clock selection
+N//E_DRVSYS_ERR_IPDIV            Incorrect IP divider selection
+N//E_DRVSYS_ERR_OUT_OF_RANGE     Clock setting is out of range
+N//E_DRVSYS_ERR_REG_PROTECTED    The Register Write Protection function is enabled
+N#define E_DRVSYS_ERR_UNLOCK_FAIL    _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 1)
+N#define E_DRVSYS_ERR_LOCK_FAIL      _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 2)
+N#define E_DRVSYS_ERR_ARGUMENT       _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 3)
+N#define E_DRVSYS_ERR_IPSRC          _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 4)
+N#define E_DRVSYS_ERR_IPDIV          _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 5)
+N#define E_DRVSYS_ERR_OUT_OF_RANGE   _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 6)
+N#define E_DRVSYS_ERR_REG_PROTECTED  _SYSINFRA_ERRCODE(TRUE, MODULE_ID_DRVSYS, 7)
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  PLL Clock Source Selector                                                                              */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_EXTERNAL_12M = 0,
+N    E_SYS_INTERNAL_22M = 1, 
+N}E_SYS_PLL_CLKSRC;
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  IP reset                                                                                               */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_GPIO_RST  = 1,
+N    E_SYS_TMR0_RST  = 2,
+N    E_SYS_TMR1_RST  = 3,
+N    E_SYS_TMR2_RST  = 4,
+N    E_SYS_TMR3_RST  = 5,
+N    E_SYS_I2C0_RST  = 8,
+N    E_SYS_I2C1_RST  = 9,
+N    E_SYS_SPI0_RST  = 12,
+N    E_SYS_SPI1_RST  = 13,
+N    E_SYS_SPI2_RST  = 14,
+N    E_SYS_SPI3_RST  = 15,
+N    E_SYS_UART0_RST = 16,
+N    E_SYS_UART1_RST = 17,
+N    E_SYS_UART2_RST = 18,
+N    E_SYS_PWM03_RST = 20,
+N    E_SYS_PWM47_RST = 21,
+N    E_SYS_ACMP_RST  = 22,
+N    E_SYS_PS2_RST   = 23,
+N    E_SYS_CAN0_RST  = 24,
+N    E_SYS_USBD_RST  = 27,
+N    E_SYS_ADC_RST   = 28,
+N    E_SYS_I2S_RST   = 29,
+N    E_SYS_PDMA_RST  = 32,
+N    E_SYS_EBI_RST   = 33
+N}E_SYS_IP_RST;
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  SYS IP Clcok Selector                                                                                  */
+N/*---------------------------------------------------------------------------------------------------------*/
+N
+Ntypedef enum 
+N{
+N    E_SYS_WDT_CLK   = 0,
+N    E_SYS_RTC_CLK   = 1,
+N    E_SYS_TMR0_CLK  = 2,
+N    E_SYS_TMR1_CLK  = 3,
+N    E_SYS_TMR2_CLK  = 4,
+N    E_SYS_TMR3_CLK  = 5,
+N    E_SYS_FDIV_CLK  = 6,
+N    E_SYS_I2C0_CLK  = 8,
+N    E_SYS_I2C1_CLK  = 9,
+N    E_SYS_SPI0_CLK  = 12,
+N    E_SYS_SPI1_CLK  = 13,
+N    E_SYS_SPI2_CLK  = 14,
+N    E_SYS_SPI3_CLK  = 15,
+N    E_SYS_UART0_CLK = 16,
+N    E_SYS_UART1_CLK = 17,
+N    E_SYS_UART2_CLK = 18,
+N    E_SYS_PWM01_CLK = 20,
+N    E_SYS_PWM23_CLK = 21,
+N    E_SYS_PWM45_CLK = 22,
+N    E_SYS_PWM67_CLK = 23,
+N    E_SYS_CAN0_CLK  = 24,
+N    E_SYS_USBD_CLK  = 27,
+N    E_SYS_ADC_CLK   = 28,
+N    E_SYS_I2S_CLK   = 29,
+N    E_SYS_ACMP_CLK  = 30,
+N    E_SYS_PS2_CLK   = 31,
+N    E_SYS_PDMA_CLK  = 33,
+N    E_SYS_ISP_CLK   = 34,
+N    E_SYS_EBI_CLK   = 35
+N}E_SYS_IP_CLK;
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  SYS IP Clcok Divider                                                                                   */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_ADC_DIV,
+N    E_SYS_UART_DIV,
+N    E_SYS_USB_DIV,
+N    E_SYS_HCLK_DIV
+N
+N}E_SYS_IP_DIV;
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  SYS IP Clcok Selector                                                                                  */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_WDT_CLKSRC,
+N    E_SYS_ADC_CLKSRC,
+N    E_SYS_TMR0_CLKSRC,
+N    E_SYS_TMR1_CLKSRC,
+N    E_SYS_TMR2_CLKSRC,
+N    E_SYS_TMR3_CLKSRC,
+N    E_SYS_UART_CLKSRC,
+N    E_SYS_PWM01_CLKSRC,
+N    E_SYS_PWM23_CLKSRC,
+N    E_SYS_I2S_CLKSRC,
+N    E_SYS_FRQDIV_CLKSRC,
+N    E_SYS_PWM45_CLKSRC,
+N    E_SYS_PWM67_CLKSRC
+N
+N}E_SYS_IP_CLKSRC;
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  SYS Chip Clock Source                                                                                  */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_XTL12M,
+N    E_SYS_XTL32K,
+N    E_SYS_OSC22M,
+N    E_SYS_OSC10K,
+N    E_SYS_PLL,
+N}E_SYS_CHIP_CLKSRC;
+N
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/*  Power Down Type                                                                                        */
+N/*---------------------------------------------------------------------------------------------------------*/
+Ntypedef enum 
+N{
+N    E_SYS_IMMEDIATE, 
+N    E_SYS_WAIT_FOR_CPU
+N}E_SYS_PD_TYPE;
+N
+N
+Ntypedef void (*BOD_CALLBACK)(void);
+Ntypedef void (*PWRWU_CALLBACK)(void);
+N
+N/*---------------------------------------------------------------------------------------------------------*/
+N/* Define SYS functions prototype                                                                          */
+N/*---------------------------------------------------------------------------------------------------------*/
+Nvoid     DrvSYS_ClearClockSwitchStatus(void);
+Nuint32_t DrvSYS_ClearResetSource(uint32_t u32Src);
+N
+Nvoid     DrvSYS_Delay(uint32_t us);
+Nvoid     DrvSYS_DisableBODLowPowerMode(void);
+Nvoid     DrvSYS_DisableHighPerformanceMode(void);
+Nvoid     DrvSYS_DisableLowVoltReset(void);
+Nvoid     DrvSYS_DisablePOR(void);
+Nvoid     DrvSYS_DisableTemperatureSensor(void);
+N
+Nvoid     DrvSYS_EnableBODLowPowerMode(void);
+Nvoid     DrvSYS_EnableHighPerformanceMode(void);
+Nvoid     DrvSYS_EnableLowVoltReset(void);
+Nvoid     DrvSYS_EnablePOR(void);
+Nvoid     DrvSYS_EnableTemperatureSensor(void);
+Nvoid     DrvSYS_EnterPowerDown(E_SYS_PD_TYPE ePDType);
+N
+Nuint32_t DrvSYS_GetBODState(void);
+Nint32_t  DrvSYS_GetChipClockSourceStatus(E_SYS_CHIP_CLKSRC eClkSrc);
+Nuint32_t DrvSYS_GetClockSwitchStatus(void);
+Nuint32_t DrvSYS_GetExtClockFreq(void);
+Nuint32_t DrvSYS_GetHCLKFreq(void);
+Nuint32_t DrvSYS_GetPLLClockFreq(void);
+Nuint32_t DrvSYS_GetPLLContent(E_SYS_PLL_CLKSRC ePllSrc, uint32_t u32PllClk);
+Nuint32_t DrvSYS_GetResetSource(void);
+Nuint32_t DrvSYS_GetVersion(void);
+N
+Nint32_t  DrvSYS_IsProtectedRegLocked(void);
+N
+Nint32_t  DrvSYS_LockProtectedReg(void);
+N
+Nint32_t  DrvSYS_Open(uint32_t u32Hclk);
+N
+Nuint32_t DrvSYS_ReadProductID(void);
+Nvoid     DrvSYS_ResetChip(void);
+Nvoid     DrvSYS_ResetCPU(void);
+Nvoid     DrvSYS_ResetIP(E_SYS_IP_RST eIpRst);
+N
+Nvoid     DrvSYS_SelectBODVolt(uint8_t u8Volt);
+Nint32_t  DrvSYS_SelectHCLKSource(uint8_t u8ClkSrcSel);
+Nint32_t  DrvSYS_SelectIPClockSource(E_SYS_IP_CLKSRC eIpClkSrc, uint8_t u8ClkSrcSel);
+Nvoid     DrvSYS_SelectPLLSource(E_SYS_PLL_CLKSRC ePllSrc);
+Nint32_t  DrvSYS_SelectSysTickSource(uint8_t u8ClkSrcSel);
+Nvoid     DrvSYS_SetBODFunction(int32_t i32Enable, int32_t i32Mode, BOD_CALLBACK bodcallbackFn);
+Nint32_t  DrvSYS_SetClockDivider(E_SYS_IP_DIV eIpDiv , int32_t i32value);
+Nint32_t  DrvSYS_SetFreqDividerOutput(int32_t i32Flag, uint8_t u8Divider);
+Nvoid     DrvSYS_SetIPClock(E_SYS_IP_CLK eIpClk, int32_t i32Enable);
+Nint32_t  DrvSYS_SetOscCtrl(E_SYS_CHIP_CLKSRC eClkSrc, int32_t i32Enable);
+Nvoid     DrvSYS_SetPLLContent(uint32_t u32PllContent);
+Nvoid     DrvSYS_SetPLLMode(int32_t i32Flag);
+Nvoid     DrvSYS_SetPowerDownWakeUpInt(int32_t i32Enable, PWRWU_CALLBACK pdwucallbackFn, int32_t i32enWUDelay);
+N
+Nint32_t  DrvSYS_UnlockProtectedReg(void);
+N
+N#endif
+N
+L 3 "Motor_Ctrl.c" 2
 Nmotor motorX , motorY;
 Nmotor_controller mcX , mcY;
+Nservo_controller scZ;
 Nuint8_t SystemStatus = WAIT;
 Xuint8_t SystemStatus = 2;
 N
 N
+Nuint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name) {
+N	sc->enable = PAUSE;
+X	sc->enable = 0;
+N	sc->timer = m_timer;
+N	sc->PWM_func = m_func;
+N	sc->name = m_name;
+N	sc->ratio = 1;
+N	sc->spt.u8HighPulseRatio = sc->ratio;
+N	sc->spt.i32Inverter = 0;
+N	sc->spt.u32Frequency = 50;
+N	sc->spt.u8Mode = DRVPWM_AUTO_RELOAD_MODE;
+X	sc->spt.u8Mode = 1;
+W "Motor_Ctrl.c" 19 1 missing return statement at end of non-void function "InitServoController"
+N}
 N
 Nuint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed) {
 N	m->maxStep = max_step;
@@ -11257,7 +11508,7 @@ N	m_controller->spt.i32Inverter = 0;
 N	m_controller->spt.u32Frequency = m->speed;
 N	m_controller->spt.u8Mode = DRVPWM_AUTO_RELOAD_MODE;
 X	m_controller->spt.u8Mode = 1;
-N	m_controller->dir_port = dirP;
+N	m_controller->dir_port = dirP; //control direction GPIO port
 N	return 1;
 N}
 N
@@ -11316,7 +11567,7 @@ Nuint8_t ChangeSpeed(motor_controller *mc, uint16_t speed) {
 N	mc->c_motor->speed = speed;
 N	mc->spt.u32Frequency = speed;
 N	DrvPWM_SetTimerClk(mc->timer, &(mc->spt));
-W "Motor_Ctrl.c" 79 1 missing return statement at end of non-void function "ChangeSpeed"
+W "Motor_Ctrl.c" 91 1 missing return statement at end of non-void function "ChangeSpeed"
 N}
 Nuint8_t StopMotor (motor_controller *mc){
 N	PauseMotor(mc);
@@ -11391,10 +11642,22 @@ N
 Nuint8_t EmergencyPause() {
 N	PauseMotor(&mcX);
 N	PauseMotor(&mcY);
-W "Motor_Ctrl.c" 142 1 missing return statement at end of non-void function "EmergencyPause"
+W "Motor_Ctrl.c" 154 1 missing return statement at end of non-void function "EmergencyPause"
 N}
 N
-N
+Nuint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio) {
+N	if(sc->ratio != ratio) {
+N	sc->enable = RUN;
+X	sc->enable = 1;
+N	sc->ratio= ratio;
+N	sc->spt.u8HighPulseRatio = sc->ratio;
+N	DrvPWM_SetTimerClk(sc->timer, &(sc->spt));
+N	DrvSYS_Delay(300000);
+N	sc->enable = PAUSE;
+X	sc->enable = 0;
+N	}
+W "Motor_Ctrl.c" 165 1 missing return statement at end of non-void function "ChangeServoPosition"
+N}
 Nuint16_t Convert_u8_u16(uint8_t high, uint8_t low) {
 N	uint16_t result = (uint16_t)(high<<8|low);
 N	return result;

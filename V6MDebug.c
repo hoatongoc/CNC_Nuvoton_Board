@@ -39,7 +39,8 @@ static uint32_t V6M_ProcessOneCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 				uint16_t stepY = Convert_u8_u16(pu8Buffer[6],pu8Buffer[7]);
 				uint8_t dY = pu8Buffer[8];
 				uint16_t speedY = Convert_u8_u16(pu8Buffer[9],pu8Buffer[10]);
-				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY);
+				uint8_t ratioZ = pu8Buffer[11];
+				return uMotor_Move(stepX,dX,speedX,stepY,dY,speedY,ratioZ);
 				break;
 		}
 		case CMD_PAUSE:
@@ -64,6 +65,9 @@ static uint32_t V6M_ProcessOneCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 		case CMD_MOVEHOME:
 				return uMotor_MoveHome();
 				break;
+		case CMD_ROTATE_SERVO:
+				return uServo_Rotate(pu8Buffer[1],pu8Buffer[2]);
+				break;
 		case CMD_SETSTATUS:
 				return uMotor_SetWorkingStatus(pu8Buffer[1]);
 		case CMD_GET_STATUS:
@@ -86,9 +90,10 @@ void V6M_ProcessCommand(const uint8_t *pu8Buffer, uint32_t u32Len)
 }
 
 
-uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y){
+uint32_t uMotor_Move(uint16_t x, uint8_t dirX,uint16_t speed_X,uint16_t y, uint8_t dirY, uint16_t speed_Y, uint8_t z_ratio){
 	
 	//uMotor_SetWorkingStatus(NOT_FINISHED);
+	ChangeServoPosition(&scZ,z_ratio);
 	mcX.c_motor->direction = dirX;
 	mcY.c_motor->direction = dirY;
 	ChangeSpeed(&mcX,speed_X);
@@ -152,6 +157,8 @@ uint32_t uMotor_Status() {
 	au32Data[14] = mcY.enable;
 	au32Data[15] = mcY.c_motor->speed >>8;
 	au32Data[16] = (uint8_t)mcY.c_motor->speed;
+	au32Data[17] = scZ.enable;
+	au32Data[18] = scZ.ratio;
 	
 	VCMD_AckCommand(u32Errno, (const uint8_t *)&au32Data, 62);
 }
@@ -173,4 +180,10 @@ uint32_t uMotor_SetHome() {
 
 uint32_t uMotor_MoveHome() {
 	MoveHome(&mcX,&mcY);
+}
+
+uint32_t uServo_Rotate(uint8_t sc_name, uint8_t ratio) {
+	if(sc_name == scZ.name) {
+		ChangeServoPosition(&scZ,ratio);
+	}
 }

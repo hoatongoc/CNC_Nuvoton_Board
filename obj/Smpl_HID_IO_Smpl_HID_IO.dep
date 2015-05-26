@@ -9,7 +9,7 @@ I (Include\DeviceSupport\Nuvoton\NUC1xx\system_NUC1xx.h)(0x4F61A4A4)
 I (.\Include\System\SysInfra.h)(0x4F61A4DA)
 I (.\Include\System\ModuleID.h)(0x4F61A4DA)
 F (.\Include\DeviceSupport\Nuvoton\NUC1xx\startup\arm\startup_NUC1xx.s)(0x4F61A4A4)(--cpu Cortex-M0 --pd "__EVAL SETA 1" -g --apcs=interwork -I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include--pd "__UVISION_VERSION SETA 514"--list .\lst\startup_nuc1xx.lst --xref -o .\obj\startup_nuc1xx.o --depend .\obj\startup_nuc1xx.d)
-F (.\Smpl_HID_IO.c)(0x555EA9FC)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\smpl_hid_io.o --list_dir ".\\lst\\" --list --omf_browse .\obj\smpl_hid_io.crf --depend .\obj\smpl_hid_io.d)
+F (.\Smpl_HID_IO.c)(0x55633D9A)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\smpl_hid_io.o --list_dir ".\\lst\\" --list --omf_browse .\obj\smpl_hid_io.crf --depend .\obj\smpl_hid_io.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54760110)
 I (.\Include\Driver\DrvGPIO.h)(0x4F61A4DA)
 I (.\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h)(0x4F61A4A4)
@@ -23,7 +23,7 @@ I (.\Include\Driver\DrvUART.h)(0x4F61A4DA)
 I (.\Include\Driver\DrvUSB.h)(0x4F61A4DA)
 I (.\Include\NUC1xx-LB_002\LCD_Driver.h)(0x4F61A4DA)
 I (.\Include\Driver\DrvPWM.h)(0x4F61A4DA)
-I (Motor_Ctrl.h)(0x5561B391)
+I (Motor_Ctrl.h)(0x556301AF)
 F (.\HID_API.c)(0x554C731C)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\hid_api.o --list_dir ".\\lst\\" --list --omf_browse .\obj\hid_api.crf --depend .\obj\hid_api.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54760110)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54760110)
@@ -36,7 +36,7 @@ I (.\Include\System\SysInfra.h)(0x4F61A4DA)
 I (.\Include\System\ModuleID.h)(0x4F61A4DA)
 I (HIDSysIO.h)(0x5469B2AE)
 I (HID_API.h)(0x546A07B4)
-I (V6MDebug.h)(0x55619AF8)
+I (V6MDebug.h)(0x5563485D)
 I (.\Include\Driver\DrvPWM.h)(0x4F61A4DA)
 I (.\Include\Driver\DrvSys.h)(0x4F61A4DA)
 F (.\HIDSysIO.c)(0x5469B937)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\hidsysio.o --list_dir ".\\lst\\" --list --omf_browse .\obj\hidsysio.crf --depend .\obj\hidsysio.d)
@@ -50,7 +50,7 @@ I (.\Include\System\SysInfra.h)(0x4F61A4DA)
 I (.\Include\System\ModuleID.h)(0x4F61A4DA)
 I (HIDSysIO.h)(0x5469B2AE)
 I (HID_API.h)(0x546A07B4)
-F (.\V6MDebug.c)(0x55619CD1)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\v6mdebug.o --list_dir ".\\lst\\" --list --omf_browse .\obj\v6mdebug.crf --depend .\obj\v6mdebug.d)
+F (.\V6MDebug.c)(0x556348A2)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\v6mdebug.o --list_dir ".\\lst\\" --list --omf_browse .\obj\v6mdebug.crf --depend .\obj\v6mdebug.d)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x54760110)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x54760110)
 I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x54760110)
@@ -64,11 +64,11 @@ I (.\Include\Driver\DrvGPIO.h)(0x4F61A4DA)
 I (.\Include\Driver\DrvSys.h)(0x4F61A4DA)
 I (.\Include\NUC1xx-LB_002\LCD_Driver.h)(0x4F61A4DA)
 I (HIDSysIO.h)(0x5469B2AE)
-I (V6MDebug.h)(0x55619AF8)
+I (V6MDebug.h)(0x5563485D)
 I (.\Include\Driver\DrvPWM.h)(0x4F61A4DA)
-I (Motor_Ctrl.h)(0x5561B391)
-F (.\Motor_Ctrl.c)(0x555AEE3B)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\motor_ctrl.o --list_dir ".\\lst\\" --list --omf_browse .\obj\motor_ctrl.crf --depend .\obj\motor_ctrl.d)
-I (Motor_Ctrl.h)(0x5561B391)
+I (Motor_Ctrl.h)(0x556301AF)
+F (.\Motor_Ctrl.c)(0x55633B27)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\motor_ctrl.o --list_dir ".\\lst\\" --list --omf_browse .\obj\motor_ctrl.crf --depend .\obj\motor_ctrl.d)
+I (Motor_Ctrl.h)(0x556301AF)
 I (.\Include\Driver\DrvPWM.h)(0x4F61A4DA)
 I (.\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h)(0x4F61A4A4)
 I (.\Include\CoreSupport\core_cm0.h)(0x4F61A4A4)
@@ -77,6 +77,7 @@ I (.\Include\DeviceSupport\Nuvoton\NUC1xx\system_NUC1xx.h)(0x4F61A4A4)
 I (.\Include\System\SysInfra.h)(0x4F61A4DA)
 I (.\Include\System\ModuleID.h)(0x4F61A4DA)
 I (.\Include\Driver\DrvGPIO.h)(0x4F61A4DA)
+I (.\Include\Driver\DrvSys.h)(0x4F61A4DA)
 F (C:\Nuvoton\BSP_Library\NUC100SeriesBSP_CMSIS_v1.05.003\NuvotonPlatform_Keil\Src\NUC1xx-LB_002\LCD_Driver.c)(0x4F61A4F4)(-c --cpu Cortex-M0 -D__EVAL -g -O0 --apcs=interwork --split_sections -I.\ -I.\Include -I.\Include\Driver -I.\Include\NUC1xx-LB_002 -I.\Include\System -I.\Include\USB -I.\Include\CoreSupport -I.\Src -I.\Include\DeviceSupport\Nuvoton\NUC1xx-I "D:\Tai Lieu\Github\CNC_Nuvoton_Board\RTE"-I C:\Keil_v5\ARM\PACK\Nuvoton\NuMicro_DFP\1.0.3\Device\NUC100\Include-I C:\Keil_v5\ARM\CMSIS\Include-D__UVISION_VERSION="514"-o .\obj\lcd_driver.o --list_dir ".\\lst\\" --list --omf_browse .\obj\lcd_driver.crf --depend .\obj\lcd_driver.d)
 I (.\Include\DeviceSupport\Nuvoton\NUC1xx\NUC1xx.h)(0x4F61A4A4)
 I (.\Include\CoreSupport\core_cm0.h)(0x4F61A4A4)

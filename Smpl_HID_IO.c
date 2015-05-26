@@ -28,6 +28,7 @@ void Init_SYS() {
 	motorX.speed = motorY.speed = (DEF_SPEED < MAX_SPEED ? DEF_SPEED : MAX_SPEED);
 	InitMotorController(&mcX,&motorX,E_FUNC_PWM01,DRVPWM_TIMER0,MC_X,0);
 	InitMotorController(&mcY,&motorY,E_FUNC_PWM23,DRVPWM_TIMER2,MC_Y,1);
+	InitServoController(&scZ,E_FUNC_PWM5,DRVPWM_TIMER5,SERVO_Z);
 }
 
 void Init_GPIO() {
@@ -119,22 +120,27 @@ LOCKREG();
 
 DrvGPIO_InitFunction(mcX.PWM_func);
 DrvGPIO_InitFunction(mcY.PWM_func);
+DrvGPIO_InitFunction(scZ.PWM_func);
 DrvPWM_Open();
 	
 //select PWM clock source	
 DrvPWM_SelectClockSource(mcX.timer, DRVPWM_HCLK);
 DrvPWM_SelectClockSource(mcY.timer, DRVPWM_HCLK);
+DrvPWM_SelectClockSource(scZ.timer, DRVPWM_HCLK);
 
 	//config frequency/pulse/mode/inverter function  
 DrvPWM_SetTimerClk(mcX.timer, &(mcX.spt));
 DrvPWM_SetTimerClk(mcY.timer, &(mcY.spt));
+DrvPWM_SetTimerClk(scZ.timer, &(scZ.spt));
 	
 	
 DrvPWM_SetTimerIO(mcX.timer, 1);
 DrvPWM_SetTimerIO(mcY.timer, 1);
+DrvPWM_SetTimerIO(scZ.timer, 1);
 
 DrvPWM_Enable(mcX.timer,0);
 DrvPWM_Enable(mcY.timer,0);
+DrvPWM_Enable(scZ.timer,1);
 DrvPWM_EnableInt(mcX.timer,0,DRVPWM_PwmIRQHandler_X);
 DrvPWM_EnableInt(mcY.timer,0,DRVPWM_PwmIRQHandler_Y);
 	//END INIT PWM	

@@ -1,10 +1,22 @@
 #include "Motor_Ctrl.h"
-
+#include "DrvSys.h"
 motor motorX , motorY;
 motor_controller mcX , mcY;
+servo_controller scZ;
 uint8_t SystemStatus = WAIT;
 
 
+uint8_t InitServoController(servo_controller *sc, E_DRVGPIO_FUNC m_func,uint8_t m_timer,uint8_t m_name) {
+	sc->enable = PAUSE;
+	sc->timer = m_timer;
+	sc->PWM_func = m_func;
+	sc->name = m_name;
+	sc->ratio = 3;
+	sc->spt.u8HighPulseRatio = sc->ratio;
+	sc->spt.i32Inverter = 0;
+	sc->spt.u32Frequency = 50;
+	sc->spt.u8Mode = DRVPWM_AUTO_RELOAD_MODE;
+}
 
 uint8_t InitMotor(motor *m,uint32_t max_step, uint32_t max_speed) {
 	m->maxStep = max_step;
@@ -26,7 +38,7 @@ uint8_t InitMotorController(motor_controller *m_controller,motor *m, E_DRVGPIO_F
 	m_controller->spt.i32Inverter = 0;
 	m_controller->spt.u32Frequency = m->speed;
 	m_controller->spt.u8Mode = DRVPWM_AUTO_RELOAD_MODE;
-	m_controller->dir_port = dirP;
+	m_controller->dir_port = dirP; //control direction GPIO port
 	return 1;
 }
 
@@ -141,7 +153,16 @@ uint8_t EmergencyPause() {
 	PauseMotor(&mcY);
 }
 
-
+uint8_t ChangeServoPosition(servo_controller *sc,uint8_t ratio) {
+	if(sc->ratio != ratio) {
+	sc->enable = RUN;
+	sc->ratio= ratio;
+	sc->spt.u8HighPulseRatio = sc->ratio;
+	DrvPWM_SetTimerClk(sc->timer, &(sc->spt));
+	DrvSYS_Delay(300000);
+	sc->enable = PAUSE;
+	}
+}
 uint16_t Convert_u8_u16(uint8_t high, uint8_t low) {
 	uint16_t result = (uint16_t)(high<<8|low);
 	return result;
